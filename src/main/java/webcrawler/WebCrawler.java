@@ -1,26 +1,89 @@
 package webcrawler;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class WebCrawler extends JFrame {
-    public WebCrawler() throws HeadlessException {
-        super("Web Crawler");
+    private JTextField textField;
+    private JTextArea  textArea;
+
+    public WebCrawler() {
+        setTitle("Web Crawler");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 300);
+        Dimension dimension = new Dimension(300, 300);
+        setSize(dimension);
+        setPreferredSize(dimension);
+        setLocationRelativeTo(null);
+        setLayout(new FlowLayout());
         buildWindow();
         setVisible(true);
     }
 
     private void buildWindow() {
-        this.add(getTextArea());
+        addTextField();
+        addButton();
+        addTextArea();
     }
 
-    private JTextArea getTextArea() {
-        var textArea = new JTextArea();
-        textArea.setName("TextArea");
-        textArea.setText("HTML code?");
+    private void addTextArea() {
+        textArea = new JTextArea(12, 25);
+        textArea.setName("HtmlTextArea");
+        textArea.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        textArea.setVisible(true);
         textArea.setEnabled(false);
-        return textArea;
+        this.add(textArea);
+    }
+
+    private void addTextField() {
+        textField = new JTextField();
+        textField.setName("UrlTextField");
+        textField.setColumns(15);
+        textField.setEnabled(true);
+        textField.setVisible(true);
+        this.add(textField);
+    }
+
+    private void addButton() {
+        var button = new JButton();
+        button.setName("RunButton");
+        button.setText("Download");
+        button.setSize(70,50);
+        button.setVisible(true);
+        button.setEnabled(true);
+        button.addActionListener(ignored -> setTextArea(getHtml(getTextField())));
+        this.add(button);
+    }
+
+    void setTextArea(String html) {
+        textArea.setText(html);
+    }
+
+    String getTextField() {
+        return textField.getText();
+    }
+
+    String getHtml(String url) {
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            URI website = URI.create(url);
+            HttpRequest request = HttpRequest.newBuilder()
+                                             .uri(website)
+                                             .GET()
+                                             .build();
+
+            HttpResponse<String> response = client.send(request,
+                                                        HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return response.body();
+            } else {
+                return "Error: " + response.statusCode();
+            }
+        } catch (Exception e) {
+            return "Error: " + e.getLocalizedMessage();
+        }
     }
 }

@@ -20,5 +20,15 @@
             <artifactId>assertj-swing-junit-jupiter</artifactId>
             <version>4.0.0-beta-2</version>
         </dependency>
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty-no-dependencies</artifactId>
+            <version>5.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-client-java-no-dependencies</artifactId>
+            <version>5.15.0</version>
+        </dependency>
     </dependencies>
 </project>
