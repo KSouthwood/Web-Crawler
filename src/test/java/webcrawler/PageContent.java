@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PageContent {
-    private       Map<String, String> pathWithContent;
+    private final Map<String, String> pathWithContent;
+    private final Map<String, String> pathWithTitle;
     private final int                 port   = 1080;
     private final String              domain = "localhost";
 
     public PageContent() {
         this.pathWithContent = new HashMap<>();
+        this.pathWithTitle = new HashMap<>();
         init();
     }
 
@@ -80,52 +82,53 @@ public class PageContent {
                 </body>
                 </html>""";
         String circular1Content = """
-                                  
-                                              |<!doctype html>
-                                              |<html>
-                                              |<head>
-                                              |<title>circular1tiTle</title>
-                                              |</head>
-                                              |<body>
-                                              |<a href="circular2">link1</a>
-                                              |</body>
-                                              |</html>
-                                          \
+                                  <!doctype html>
+                                  <html>
+                                  <head>
+                                  <title>circular1Title</title>
+                                  </head>
+                                  <body>
+                                  <a href="circular2">link1</a>
+                                  </body>
+                                  </html>
                                   """;
 
         String circular2Content = """
-                                  
-                                              |<!doctype html>
-                                              |<html>
-                                              |<head>
-                                              |<title>circular2tiTle</title>
-                                              |</head>
-                                              |<body>
-                                              |<a href="circular3">link1</a>
-                                              |</body>
-                                              |</html>
-                                          \
+                                  <!doctype html>
+                                  <html>
+                                  <head>
+                                  <title>circular2Title</title>
+                                  </head>
+                                  <body>
+                                  <a href="circular3">link1</a>
+                                  </body>
+                                  </html>
                                   """;
 
         String circular3Content = """
-                                  
-                                              |<!doctype html>
-                                              |<html>
-                                              |<head>
-                                              |<title>circular3tiTle</title>
-                                              |</head>
-                                              |<body>
-                                              |<a href="circular1">link</a>
-                                              |<a href="exampleDotCom">link</a>
-                                              |</body>
-                                              |</html>
-                                          \
+                                  <!doctype html>
+                                  <html>
+                                  <head>
+                                  <title>circular3Title</title>
+                                  </head>
+                                  <body>
+                                  <a href="circular1">link</a>
+                                  <a href="exampleDotCom">link</a>
+                                  </body>
+                                  </html>
                                   """;
 
         pathWithContent.put(exampleDomainPath, exampleDomainContent);
+        pathWithTitle.put(exampleDomainPath, exampleDomainTitle);
+
         pathWithContent.put(circular1Path, circular1Content);
+        pathWithTitle.put(circular1Path, circular1Title);
+
         pathWithContent.put(circular2Path, circular2Content);
+        pathWithTitle.put(circular2Path, circular2Title);
+
         pathWithContent.put(circular3Path, circular3Content);
+        pathWithTitle.put(circular3Path, circular3Title);
     }
 
     public Map<String, String> pathWithContent() {
@@ -134,6 +137,10 @@ public class PageContent {
 
     public String getContentByPath(String path) {
         return pathWithContent.getOrDefault(path, "");
+    }
+
+    public String getTitleByPath(String path) {
+        return pathWithTitle.getOrDefault(path, "");
     }
 
     public String getURLByPath(String path) {

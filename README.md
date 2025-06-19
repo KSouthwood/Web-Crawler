@@ -46,6 +46,13 @@ Practice working with regular expressions: teach the program to parse and displa
 
 ##### _Description_
 
+At this point, our program can download and display the source code of a web page, but what about the title? It 
+would be very nice if our users could see the page title right away. This is exalty what we are going to implement 
+in this stage. To do this, you need to extract the content between the start tag `<title>` and the end tag 
+`</title>` and display it in a `JLabel`.
+
+- Add a `JLabel` named "TitleLabel" to the window to display the title of the web page when the run button is clicked
+
 ### Stage 4: [Collect them all](https://hyperskill.org/projects/59/stages/320/implement)
 
 #### _Summary_

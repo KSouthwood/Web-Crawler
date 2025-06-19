@@ -16,9 +16,9 @@ import static org.mockserver.model.HttpRequest.request;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WebCrawlerTest {
     private FrameFixture window;
-    private static ClientAndServer server;
-    private static int testPort = 1080;
-    private String testServer = "localhost";
+    private static       ClientAndServer server;
+    private static final int    testPort   = 1080;
+    private final        String testServer = "localhost";
 
     @BeforeAll
     static void initAll() {
@@ -74,6 +74,7 @@ public class WebCrawlerTest {
         textField.requireText("https://localhost:1080/test1");
     }
 
+    @Disabled("This simple test is replicated in later tests")
     @DisplayName("Verify button gets source code")
     @Order(4)
     @Test
@@ -95,7 +96,7 @@ public class WebCrawlerTest {
               .requireText("Sample text");
     }
 
-    @Disabled("Have to solve typing into text field - may have to make ParameterizedTest or change test framework")
+    @Disabled("Stage 2 test is duplicated in Stage 3 test")
     @DisplayName("Verify button gets source code")
     @Order(5)
     @Test
@@ -120,11 +121,49 @@ public class WebCrawlerTest {
                                         .withBody(content)
                     );
             window.textBox("UrlTextField")
+                  .deleteText()
                   .enterText(url);
             window.button("RunButton")
                   .click();
             window.textBox("HtmlTextArea")
                   .requireText(content);
+        }
+    }
+
+    @DisplayName("Verify getting title from document and display HTML")
+    @Order(6)
+    @Test
+    void testStage3getAndDisplayTitle() {
+        PageContent pageContent = new PageContent();
+
+        for (Map.Entry<String, String> entry : pageContent.pathWithContent()
+                                                          .entrySet()) {
+            String path = entry.getKey();
+            String url = pageContent.getURLByPath(path);
+            String content = pageContent.getContentByPath(path);
+            String title = pageContent.getTitleByPath(path);
+
+            new MockServerClient(pageContent.getDomain(), pageContent.getPort())
+                    .when(
+                            request()
+                                    .withMethod("GET")
+                                    .withPath("/" + path)
+                    )
+                    .respond(
+                            HttpResponse.response()
+                                        .withStatusCode(200)
+                                        .withBody(content)
+                    );
+
+            window.textBox("UrlTextField")
+                  .deleteText()
+                  .enterText(url);
+            window.button("RunButton")
+                  .click();
+            window.textBox("HtmlTextArea")
+                  .requireText(content);
+            window.label("TitleLabel")
+                  .requireText(title);
         }
     }
 }
